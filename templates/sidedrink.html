@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <h2>Order sides and drinks</h2>
+        {% if form %}
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong>Error:</strong><br>
+                {% for field in form.fields %}
+                    {% if form.has_error(field.name) %}
+                        {{ field.error }} <br>
+                    {% endif %}
+                {% endfor %}
+                {% for name, msg in form.otherErrors.items() %}
+                    {{msg}}<br>
+                {% endfor %}
+        </div>
+        {% endif %}
+        {% if added %}
+            <div class="success">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <strong>Success:</strong><br> 
+                    {% if "side" in added %}
+                        Side added to order<br>
+                    {% endif %}
+                    {% if "drink" in added %}
+                        Drink added to order
+                    {% endif %}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <!-- Add form contents of ingredient here-->
+            {% if system and system.inventory %}
+                <table id ="order">
+                <tr>
+                    <th>Sides</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                </tr>
+                {% for ingredient in system.inventory.ingredients %}
+                    {% if ingredient.iType == iType.SIDE %}
+                        {% if ingredient.quantity > 0 %}
+                            <tr>
+                                <td>{{ingredient.name | title}}</td>
+                                <td>
+                                    <!-- ingredient.name + "_size" -->
+                                    <select id="choice" name="{{ingredient.name}}_size">
+                                        {% for size in ingredient.servingSizes %}
+                                            {% if ingredient.quantity >= ingredient.servingSizes[size] %}
+                                            <option value="{{size}}">{{size|capitalize}}: 
+                                                {% if size != "regular" %}{{ingredient.servingSizes[size]}} {{ingredient.unit}}{% endif %}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" name="{{ingredient.name}}" min="0" max="{{system.inventory.getIngredient(ingredient.name).quantity}}" step="1" placeholder="0"/>
+                                    <span class="validity"></span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if has[iType.SIDE] == False %}
+                <tr><td colspan="3">No sides available</td></tr>
+                {% endif %}
+
+                <tr>
+                    <th>Drinks</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                </tr>
+                {% for ingredient in system.inventory.ingredients %}
+                    {% if ingredient.iType == iType.DRINK %}
+                        {% if ingredient.quantity > 0 %}
+                        <tr>
+                            <td>{{ingredient.name | title}}</td>
+                            <td>
+                                <!-- ingredient.name + "_size" -->
+                                <select id="choice" name="{{ingredient.name}}_size">
+                                    {% for size in ingredient.servingSizes %}
+                                        {% if ingredient.quantity >= ingredient.servingSizes[size] %}
+                                        <option value="{{size}}">{{size|capitalize}}
+                                            {% if size != "regular" %}: {{ingredient.servingSizes[size]}} {{ingredient.unit}}{% endif %}</option>
+                                        </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" name="{{ingredient.name}}" min="0" max="{{system.inventory.getIngredient(ingredient.name).quantity}}" step="1" placeholder="0"/>
+                                <span class="validity"></span>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if has[iType.DRINK] == False %}
+                <tr><td colspan="3">No drinks available</td></tr>
+                {% endif %}
+                <tr>
+                    <th colspan="3"><button class="button" style="width:100%" type="submit">Add to order</button>
+                </tr>
+                </table><br>
+            {% endif %}
+            
+        </form><br>
+        <div>
+                <table id="order">
+                <tr>
+                    <th>
+                        <a href="{{url_for('main', orderID=order.ID)}}"><button class="button">Order more main</button></a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('reviewOrder', orderID=order.ID)}}"><button class="button">Review Order</button></a>
+                    </th>
+                </tr>
+                </table>
+            </div>
+    </div>
+</div>
+    
+{% endblock %}

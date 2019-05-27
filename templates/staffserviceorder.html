@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <h2>Order ID: {{order.ID}}</h2>
+        {% if order.prepared == False %}
+        <table id=order>
+            {% if order.mainOrders %}
+                {% for ord in order.mainOrders %}
+                <tr>
+                    <th colspan="2">Main Order</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Quantity</th>
+                </tr>
+                <tr>
+                    {% for ing, qty in ord.ingredients.items() %}
+                    <td>{{ ing | capitalize }}</td>
+                    <td>{{ qty }}</td>
+                </tr>
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <th colspan="2">No Main Orders</th>
+                </tr>
+            {% endif %}
+        </table>
+        <br>
+        <table id="order">
+            {% if order.sidesAndDrinks %}
+                <tr>
+                    <th colspan="4">Side and Drink Orders</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Serving Size</th>
+                    <th>Qty per Size</th>
+                    <th>Quantity</th>
+                </tr>
+                {% for ord in order.sidesAndDrinks %}
+                <tr>
+                    <td>{{ ord.name | capitalize}}</td>
+                    <td>{{ ord.servingSize | capitalize }}</td>
+                    <td>{{inventory.getIngredient(ord.name).servingSizes[ord.servingSize]}} 
+                        {{ inventory.getIngredient(ord.name).unit }}</td>
+                    <td>{{ ord.quantity }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <th colspan="4">No Side and Drink Orders</th>
+                </tr>
+            {% endif %}
+        </table>
+        <br>
+    <table id="order">
+        <tr>
+        <th>
+        <form method="POST">
+                <button class="button" type="submit" name="prepared" value={{order.ID}} >Order Prepared</button>
+        </form>
+        {% else %}
+        <table id="order"> 
+            <tr>
+                <th>Order is already prepared.</th>
+            </tr>
+        {% endif %}
+        </th>
+        <th><a href="{{url_for('staff')}}"><button class="button" type="submit">Return to Active Orders</button></td></a>
+        </th>
+    </table>
+    </div>
+</div>
+
+{% endblock %}

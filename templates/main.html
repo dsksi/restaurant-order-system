@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <div>
+            <h2>Order main</h2>
+        </div>
+        <table id="order">
+        <form method="POST">
+            <tr>
+                <th><button class="button" type="submit" style="width:100%" name="standardWrap">Add standard wrap</button></th>
+                <th><button class="button" type="submit" style="width:100%" name="standardBurger">Add standard burger</button></th>
+            </tr>
+        </form>
+        <tr>
+            <th><a href="{{url_for('wrap', orderID=order.ID)}}"><button class="button" style="width:100%">Customise wrap</button></a></th>
+            <th><a href="{{url_for('burger', orderID=order.ID)}}"><button class="button" style="width:100%">Customise burger</button></a></th>
+        </tr>
+        </table>
+        <br>
+        <br>
+        {% if werror %}
+                <br>
+                <div class="alert">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                    <strong>Error:</strong> {{werror.msg}}
+                </div>
+            {% endif %}
+            {% if berror %}
+                <br>
+                <div class="alert">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                    <strong>Error:</strong> {{berror.msg}}
+                </div>
+            {% endif %}
+            {% if badded or wadded %}
+            <br>
+            <div class="success">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <strong>Success:</strong> {{wadded}}{{badded}} added to order
+            </div>
+            {% endif %}
+        
+        <h2>Proceed to order side and drink</h2>
+        <div>
+                <table id="order">
+                        <tr>
+                            <th>
+                                <a href="{{url_for('sidedrink', orderID=order.ID)}}"><button class="button">Continue to side and drink</button></a>
+                            </th>
+                            <th>
+                                <a href="{{url_for('reviewOrder', orderID=order.ID)}}"><button class="button">Review Order</button></a>
+                            </th>
+                        </tr>
+                </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <div><h2>Add New Ingredient To Inventory</h2></div>
+        {% if form %}
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong>Error:</strong><br>
+                {% for name, msg in form.otherErrors.items() %}
+                    {{msg}}<br>
+                {% endfor %}
+        </div>
+        {% endif %}
+        <form method="POST">
+            <table id="order">
+                <tr>
+                    <th>Ingredient Name</th>
+                    <td><input type="text" style="width:100%" value="" name="name" placeholder="Enter new ingredient name"/></td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td><input type="number" style="width:100%" value="" name="price" step=0.01 min=0 max=30 placeholder="Enter ingredient price per unit"/></td>
+                </tr>
+                <tr>
+                    <th>Quantity</th>
+                    <td><input type="number" style="width:100%" value="" name="quantity" step=1 min=0 placeholder="Enter ingredient quantity"/></td>
+                </tr>
+                <tr>
+                    <th>Type of Ingredient</th>
+                    <td>
+                        <select id="choice" name="type" style="width:100%">
+                            {% for ingType in IngredientType %}
+                                <option value="{{ingType.value}}">{{ingType.name|capitalize}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Serving Size</th>
+                    <td>
+                        <select id="choice" name="size" style="width:100%">
+                            <option value="regular">One Regular Size</option>
+                            <option value="smlSize">Three Sizes: Small, Medium, Large</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Unit of serving size quantity</th>
+                    <td>
+                        <select id="choice" name="unit" style="width:100%">
+                            <option value="unit">Regular unit</option>
+                            <option value="g">Gram (g)</option>
+                            <option value="ml">Millilitre (ml)</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th colspan="2">If selected non-regular serving size, <br>please enter desired quantity for each size</th>
+                </tr>
+                <tr>
+                    <td>Small</td>
+                    <td>
+                        <input type="number" style="width:100%" name="sQty" step=1 min=0 max=1000 value="" placeholder="Enter quantity in grams or ml for small"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Medium</td>
+                    <td>
+                        <input type="number" style="width:100%" name="mQty" step=1 min=0 max=1000 value="" placeholder="Enter quantity in grams or ml for medium"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Large</td>
+                    <td>
+                        <input type="number" style="width:100%" name="lQty" step=1 min=0 max=1000 value="" placeholder="Enter quantity in grams or ml for large"/>
+                    </td>
+                </tr>
+        
+                <tr><th colspan="3">
+                    <button class="button" type="submit" style="width:100%">Add New Ingredient</button></th></tr>
+            </form>
+                {% if success %}
+                    <div class="success">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                        <strong>Success:</strong> Ingredient: {{success | title}} added
+                    </div>
+                {% endif %}
+
+            </table>
+            </div>
+        
+    </div>
+</div>
+
+{% endblock %}

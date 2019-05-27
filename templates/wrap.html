@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <div>
+            <h2>Customise your wrap</h2>
+        </div>
+        {% if form %}
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong>Error:</strong><br>
+                {% for field in form.fields %}
+                    {% if form.has_error(field.name) %}
+                        {{ field.error }}<br>
+                    {% endif %}
+                {% endfor %}
+                {% for name, msg in form.otherErrors.items() %}
+                    {{msg}}<br>
+                {% endfor %}
+        </div>
+        {% endif %}
+        {% if added %}
+            <div class="success">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <strong>Success:</strong> Main added to order
+            </div>
+        {% endif %}
+        <form method="POST">
+        
+            <!-- Add form contents of ingredient here-->
+            <div>
+            <table id = "order">
+                <tr>
+                    <th>Wrap</th>
+                    <th>Quantity</th>
+                </tr>
+                {% if hasWrap != False %}
+                    {% for item in system.inventory.ingredients %}
+                        {% if item.iType == iType.WRAP %}
+                            {% if item.quantity > 0 %}
+                                <tr>
+                                    <td>{{item.name | title}}</td>
+                                    <td>
+                                        <input type="number"  name="{{item.name}}" min="0" max="1" step="1" placeholder="0"/>
+                                        <span class="validity"></span>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="2">No wrap available</td></tr>
+                {% endif %}
+ 
+                <tr>
+                    <th>Patty</th>
+                    <th>Quantity</th>
+                </tr>
+                {% if hasPatty != False %}
+                {% for item in system.inventory.ingredients %}
+                    {% if item.iType == iType.PATTY %}
+                        {% if item.quantity > 0 %}
+                            <tr>
+                                <td>{{item.name | title}}</td>
+                                <td>
+                                    <input type= "number" name="{{item.name}}" min="0" max="{{system.inventory.getIngredient(item.name).quantity}}" step="1" placeholder="0"/>
+                                    <span class="validity"></span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="2">No patty available</td></tr>
+                {% endif %}
+
+
+                <tr>
+                    <th>Filling</th>
+                    <th>Quantity</th>
+                </tr>
+                {% if hasFilling != False %}
+                {% for item in system.inventory.ingredients %}
+                    {% if item.iType == iType.FILLING %}
+                        {% if item.quantity > 0 %}
+                            <tr>
+                                <td> {{item.name | title}} </td>
+                                <td>
+                                    <input type="number" name="{{item.name}}" max="{{system.inventory.getIngredient(item.name).quantity}}" min="0" step="1" placeholder="0"/>
+                                    <span class="validity"></span>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="2">No filling available</td></tr>
+                {% endif %}
+                <tr><th colspan="2"><button class="button" style="width:100%" name="submit">Add to order</button></a></th></tr>
+            </table>
+            </div>
+
+            <br>
+        </form>
+        <br>
+        
+        <div>
+            <table id="order">
+            <tr>
+                <th>
+                    <a href="{{url_for('sidedrink', orderID=order.ID)}}"><button class="button">Proceed to side and drink menu</button></a>
+                </th>
+                <th>
+                    <a href="{{url_for('reviewOrder', orderID=order.ID)}}"><button class="button">Review Order</button></a>
+                </th>
+            </tr>
+            </table>
+        </div>
+</div>
+
+{% endblock %}

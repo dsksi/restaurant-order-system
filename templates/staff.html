@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <h2>Active Orders List</h2>
+        <table id=order>
+            <tr>
+                <th>Customer Order ID</th>
+                <th>Order Details</th>
+                <th>Update Status</th>
+            </tr>
+            {% for order in orders%}
+                <tr>
+                    <th>{{ order.ID }}</th>
+                    <td>
+                            <a href="{{url_for('serviceOrder', orderID=order.ID)}}">
+                                <button type="submit" class="button1" style="width:100%">Inspect Order</button>
+                            </a>
+                    </td>
+                    <td>
+                            <form method="POST">
+                                <button type="submit" class="button1" name="prepared" value={{order.ID}} style="width:100%">Order Prepared</button>
+                            </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% if orders %}
+        {% else %}
+            <tr>
+                <td colspan="3">No Active Orders</td>
+            </tr>
+        {% endif %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

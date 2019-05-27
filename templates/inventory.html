@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <div><h2>Update Inventory</h2></div>
+        {% if form %}
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+            <strong>Error:</strong><br>
+            
+                {% for field in form.fields %}
+                    {% if form.has_error(field.name) %}
+                        {{ field.error }} {{ field.name | capitalize}} <br>
+                    {% endif %}
+                {% endfor %}
+                {% if form.has_error("quantity") %}
+                    Non integer input
+                {% endif %}
+        </div>
+        {% endif %}
+        <form method="POST">
+            <div>
+            <table id="order">
+                {% if not noIngredients %}
+                {% for it in iType %}
+                    <tr>
+                        <th>{{it.name | capitalize}}</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                        <th>Update stock</th>
+                    </tr>
+                    {% if has[it] == True %}
+                        {% for item in system.inventory.ingredients %}
+                            {% if item.iType == it %}
+                                <tr>
+                                    <td>{{item.name | title}}</td>
+                                    <td>{{item.quantity}}</td>
+                                    <td>{{item.unit}}</td>
+                                    <td>
+                                        <input type="number" value="0" name="{{item.name}}" step="1" placeholder="0"/>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">No {{it.name | capitalize}} in inventory</td></tr>
+                    {% endif %}
+
+                {% endfor %}
+                    <tr><th colspan="4"><button class="button" style="width:100%" name="submit">Update Inventory</button></th></tr>
+                </form>
+
+                {% else %}
+                    <tr><th colspan="4">No ingredients in inventory to update,<br>please update ingredients</th></tr>
+                {% endif %}
+
+                {% if success %}
+                    <div class="success">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                        <strong>Success:</strong> Inventory updated
+                    </div>
+                {% endif %}
+
+            </table>
+            </div>
+
+    </div>
+</div>
+
+{% endblock %}

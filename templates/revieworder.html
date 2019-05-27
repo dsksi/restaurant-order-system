@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block body %}
+<div id="wrap">
+    <div id="content">
+        <div>
+        <br>
+        <h2>Review Order:</h2>
+        <br>
+        <table id=order>
+            {% if order.mainOrders %}
+                {% for ord in order.mainOrders %}
+                <tr>
+                    <th colspan="2">Main Order</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Quantity</th>
+                </tr>
+                <tr>
+                    {% for ing, qty in ord.ingredients.items() %}
+                    <td>{{ ing | title }}</td>
+                    <td>{{ qty }}</td>
+                </tr>
+                    {% endfor %}
+                <tr>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        ${{'%0.1f'|format(ord.calculateCost(system.inventory)|float)}}
+                    </th>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <th colspan="2">No Main Orders</th>
+                </tr>
+            {% endif %}
+        </table>
+        <br>
+        <table id="order">
+            {% if order.sidesAndDrinks %}
+                <tr>
+                    <th colspan="4">Side and Drink Orders</th>
+                </tr>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Serving Size</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                {% for ord in order.sidesAndDrinks %}
+                <tr>
+                    <td>{{ ord.name | title}}</td>
+                    <td>{{ ord.servingSize | title }}</td>
+                    <td>{{ ord.quantity }}</td>
+                    <td>${{'%0.1f'|format(ord.calculateCost(system.inventory)|float) }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <th colspan="3">No Side and Drink Orders</th>
+                </tr>
+            {% endif %}
+        </table>
+        <br>
+            {% if error %}
+                <br>
+                <div class="alert">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                    <strong>Error:</strong> {{error.msg}}
+                </div>
+            {% endif %}
+        <table id="order">
+            <tr>
+                <th>Total Price</th>
+                <td>${{ price }}</td>
+            </tr>
+                <tr>
+                    <th>
+                        <a href="{{url_for('main', orderID=order.ID)}}"><button style="width:100%" class="button">Continue Order</button></a>
+                    </th>
+                    <th>
+                        <a href="{{url_for('checkOut', orderID=order.ID)}}"><button style="width:100%" class="button">Check Out</button></a>
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan="2">
+                        <a href="{{url_for('ordercancel', orderID=order.ID)}}"><button style="width:100%" class="button">Cancel Order</button> 
+                    </th>
+                </tr>
+        </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
