@@ -27,14 +27,14 @@ Staff will also be responsible for maintaining the inventory of their various in
 ---
 ### Setup the virtual environment
 Create the venv folder in the current directory.
-    'virtualenv --python=python3 venv'
+    `virtualenv --python=python3 venv`
 Activate the virtual environment
-    '. venv/bin/activate'
+    `. venv/bin/activate`
 Install dependencies in the virtual environment.
-    'pip3 install -r requirements.txt'
+    `pip3 install -r requirements.txt`
 
 ### Run the app
-'python3 run.py'
+`python3 run.py`
 
 ### Run test files
-'pytest test\*.py'
+`pytest test\*.py`
